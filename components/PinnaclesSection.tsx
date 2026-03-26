@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { NumerologyResult } from '@/lib/numerology'
 
 // ── Number keyword mappings ────────────────────────────────
@@ -84,7 +84,7 @@ function parseInterpretation(text: string): { stages: ParsedStage[]; summary: Pa
 function SectionLabel({ children }: { children: string }) {
   return (
     <p className="text-sm mb-1.5" style={{ color: 'var(--text-dim)' }}>
-      {children}
+      {children}：
     </p>
   )
 }
@@ -110,6 +110,15 @@ export default function PinnaclesSection({
 
   const currentIndex = result.pinnacles.findIndex(isCurrent)
   const [activeIndex, setActiveIndex] = useState(currentIndex >= 0 ? currentIndex : 0)
+
+  useEffect(() => {
+    function handleKey(e: KeyboardEvent) {
+      if (e.key === 'ArrowLeft') setActiveIndex(i => Math.max(0, i - 1))
+      if (e.key === 'ArrowRight') setActiveIndex(i => Math.min(result.pinnacles.length - 1, i + 1))
+    }
+    window.addEventListener('keydown', handleKey)
+    return () => window.removeEventListener('keydown', handleKey)
+  }, [result.pinnacles.length])
 
   const { stages, summary } = parseInterpretation(interpretation)
   const activePinnacle = result.pinnacles[activeIndex]
@@ -154,7 +163,7 @@ export default function PinnaclesSection({
               </div>
               <div className="text-[9px]" style={{ color: 'var(--text-dim)' }}>{ageLabel(p)}</div>
               {current && (
-                <div className="text-[8px] mt-1 tracking-wider" style={{ color: 'var(--gold)' }}>◉ 当前</div>
+                <div className="text-[9px] mt-1 tracking-wider" style={{ color: 'var(--gold)' }}>当前阶段</div>
               )}
             </button>
           )
@@ -172,39 +181,36 @@ export default function PinnaclesSection({
         {/* Header */}
         <div className="flex items-start justify-between gap-3">
           <div>
-            <p className="text-xs tracking-wider mb-1" style={{ color: 'var(--gold)' }}>
+            <p className="text-xs tracking-wider" style={{ color: 'var(--gold)' }}>
               {activePinnacle.label} · {ageLabel(activePinnacle)}
               · {birthYear + activePinnacle.startAge}{activePinnacle.endAge ? `–${birthYear + activePinnacle.endAge}` : '+'}
             </p>
-            {isCurrent(activePinnacle) && (
-              <p className="text-xs" style={{ color: 'var(--text-dim)' }}>◉ 当前阶段</p>
-            )}
           </div>
-          {/* 外在 · 内在 pill badges */}
+          {/* 外在 · 内在 badges — same rounded-xl as timeline cards */}
           <div className="flex gap-2 shrink-0">
-            <span className="text-xs px-3 py-1 rounded-full flex items-center gap-1.5"
+            <span className="text-xs px-3 py-1.5 rounded-xl inline-flex items-center gap-1.5"
               style={{ background: 'rgba(201,168,76,0.12)', border: '1px solid rgba(201,168,76,0.25)', color: 'var(--gold)' }}>
-              <span className="w-1.5 h-1.5 rounded-full" style={{ background: 'var(--gold)' }}></span>
+              <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: 'var(--gold)' }}></span>
               外在 {activePinnacle.number}
             </span>
-            <span className="text-xs px-3 py-1 rounded-full flex items-center gap-1.5"
+            <span className="text-xs px-3 py-1.5 rounded-xl inline-flex items-center gap-1.5"
               style={{ background: 'rgba(124,58,237,0.12)', border: '1px solid rgba(124,58,237,0.28)', color: 'rgba(180,160,240,1)' }}>
-              <span className="w-1.5 h-1.5 rounded-full" style={{ background: 'rgba(180,160,240,1)' }}></span>
+              <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: 'rgba(180,160,240,1)' }}></span>
               内在 {activePinnacle.challenge}
             </span>
           </div>
         </div>
 
-        {/* Keywords — unified pill style */}
+        {/* Keywords — same rounded-xl as timeline cards */}
         <div className="flex flex-wrap gap-1.5">
           {(PINNACLE_KW[activePinnacle.number] ?? []).map(kw => (
-            <span key={kw} className="text-[10px] px-2.5 py-1 rounded-full"
+            <span key={kw} className="text-[10px] px-2.5 py-1.5 rounded-xl inline-flex items-center justify-center"
               style={{ background: 'rgba(201,168,76,0.09)', color: 'rgba(201,168,76,0.85)', border: '1px solid rgba(201,168,76,0.18)' }}>
               {kw}
             </span>
           ))}
           {(CHALLENGE_KW[activePinnacle.challenge] ?? []).map(kw => (
-            <span key={kw} className="text-[10px] px-2.5 py-1 rounded-full"
+            <span key={kw} className="text-[10px] px-2.5 py-1.5 rounded-xl inline-flex items-center justify-center"
               style={{ background: 'rgba(124,58,237,0.09)', color: 'rgba(160,140,220,0.85)', border: '1px solid rgba(124,58,237,0.18)' }}>
               {kw}
             </span>
@@ -247,7 +253,7 @@ export default function PinnaclesSection({
             {activeStage.risk && (
               <div>
                 <SectionLabel>风险提醒</SectionLabel>
-                <p className="text-sm leading-relaxed" style={{ color: 'var(--text-dim)' }}>{activeStage.risk}</p>
+                <p className="text-sm leading-relaxed" style={{ color: 'var(--text-main)' }}>{activeStage.risk}</p>
               </div>
             )}
           </div>
