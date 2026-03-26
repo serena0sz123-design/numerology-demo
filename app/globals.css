@@ -1,26 +1,224 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --bg-deep:    #06060f;
+  --bg-card:    #0d0d2b;
+  --gold:       #c9a84c;
+  --gold-light: #f0d080;
+  --purple:     #7c3aed;
+  --blue-glow:  #3b82f6;
+  --text-main:  #e8e8f0;
+  --text-dim:   #8888aa;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+  --color-background: var(--bg-deep);
+  --color-foreground: var(--text-main);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+* {
+  box-sizing: border-box;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--bg-deep);
+  color: var(--text-main);
+  font-family: 'Georgia', 'Times New Roman', serif;
+  min-height: 100vh;
+  overflow-x: hidden;
 }
+
+/* 星空背景 */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 20% 20%, rgba(124,58,237,0.15) 0%, transparent 60%),
+    radial-gradient(ellipse at 80% 80%, rgba(59,130,246,0.12) 0%, transparent 60%),
+    radial-gradient(ellipse at 50% 50%, rgba(201,168,76,0.05) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* 金色渐变文字 */
+.text-gold {
+  background: linear-gradient(135deg, #c9a84c, #f0d080, #c9a84c);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* 金属质感按钮 */
+.btn-gold {
+  background: linear-gradient(135deg, #8a6a1a, #c9a84c, #f0d080, #c9a84c, #8a6a1a);
+  background-size: 200% 200%;
+  animation: shimmer 3s ease infinite;
+  border: none;
+  color: #06060f;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 0 20px rgba(201,168,76,0.3), inset 0 1px 0 rgba(255,255,255,0.2);
+}
+
+.btn-gold:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 0 35px rgba(201,168,76,0.5), inset 0 1px 0 rgba(255,255,255,0.3);
+}
+
+@keyframes shimmer {
+  0%   { background-position: 0% 50% }
+  50%  { background-position: 100% 50% }
+  100% { background-position: 0% 50% }
+}
+
+/* 卡片样式 */
+.card-cosmic {
+  background: linear-gradient(135deg, rgba(13,13,43,0.9), rgba(20,10,40,0.9));
+  border: 1px solid rgba(201,168,76,0.2);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 30px rgba(0,0,0,0.5), inset 0 1px 0 rgba(201,168,76,0.1);
+}
+
+/* 数字圆圈 */
+.number-orb {
+  background: radial-gradient(circle at 35% 35%, rgba(201,168,76,0.3), rgba(124,58,237,0.2), rgba(6,6,15,0.9));
+  border: 1.5px solid rgba(201,168,76,0.5);
+  box-shadow: 0 0 20px rgba(201,168,76,0.2), inset 0 0 20px rgba(201,168,76,0.05);
+  transition: border-color 0.3s, box-shadow 0.3s, transform 0.3s;
+  animation: orb-breathe 3s ease-in-out infinite;
+}
+
+.number-orb:hover {
+  border-color: rgba(201,168,76,0.9);
+  box-shadow: 0 0 35px rgba(201,168,76,0.4), inset 0 0 25px rgba(201,168,76,0.1);
+  cursor: pointer;
+  animation: none;
+  transform: translateY(-3px) scale(1.05);
+}
+
+.number-orb.active {
+  border-color: #f0d080;
+  box-shadow: 0 0 40px rgba(240,208,128,0.6), inset 0 0 30px rgba(201,168,76,0.15);
+  animation: none;
+}
+
+/* 风琴展开 */
+.accordion-item {
+  border: 1px solid rgba(201,168,76,0.15);
+  transition: border-color 0.3s;
+}
+
+.accordion-item:hover {
+  border-color: rgba(201,168,76,0.35);
+}
+
+.accordion-item.open {
+  border-color: rgba(201,168,76,0.4);
+}
+
+/* 输入框 */
+.input-cosmic {
+  background: rgba(13,13,43,0.8);
+  border: 1px solid rgba(201,168,76,0.3);
+  color: #e8e8f0;
+  outline: none;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.input-cosmic:focus {
+  border-color: rgba(201,168,76,0.7);
+  box-shadow: 0 0 15px rgba(201,168,76,0.2);
+}
+
+.input-cosmic::placeholder {
+  color: rgba(136,136,170,0.6);
+}
+
+/* 分割线 */
+.divider-gold {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(201,168,76,0.4), transparent);
+}
+
+/* 星星闪烁 */
+@keyframes twinkle {
+  0%, 100% { opacity: 0.3; transform: scale(1); }
+  50%       { opacity: 1;   transform: scale(1.3); }
+}
+
+.star {
+  animation: twinkle var(--duration, 3s) ease-in-out infinite;
+  animation-delay: var(--delay, 0s);
+}
+
+/* 淡入动画 */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.6s ease forwards;
+}
+
+/* 数字球心跳呼吸 */
+@keyframes orb-breathe {
+  0%, 100% { box-shadow: 0 0 20px rgba(201,168,76,0.2), inset 0 0 20px rgba(201,168,76,0.05); transform: scale(1); }
+  50%       { box-shadow: 0 0 32px rgba(201,168,76,0.45), inset 0 0 25px rgba(201,168,76,0.12); transform: scale(1.04); }
+}
+
+.number-orb {
+  animation: orb-breathe 3s ease-in-out infinite;
+}
+
+.number-orb.active {
+  animation: none;
+}
+
+/* 加载页旋转环 */
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+.animate-spin-slow {
+  animation: spin-slow 8s linear infinite;
+}
+
+/* 流星 */
+@keyframes meteor-fly {
+  0%   { transform: rotate(-45deg) translateX(-150px); opacity: 0; }
+  8%   { opacity: 1; }
+  92%  { opacity: 1; }
+  100% { transform: rotate(-45deg) translateX(1200px); opacity: 0; }
+}
+
+.meteor {
+  position: absolute;
+  width: 1px;
+  height: 70px;
+  background: linear-gradient(to bottom, transparent, rgba(201,168,76,0.85), rgba(201,168,76,0.2));
+  transform-origin: top center;
+  animation: meteor-fly var(--duration, 4s) ease-in var(--delay, 0s) infinite;
+  pointer-events: none;
+}
+
+/* 当前巅峰/流年呼吸高亮 */
+@keyframes highlight-breathe {
+  0%, 100% { box-shadow: 0 0 12px rgba(201,168,76,0.35); border-color: rgba(201,168,76,0.55); }
+  50%       { box-shadow: 0 0 28px rgba(201,168,76,0.7);  border-color: rgba(201,168,76,1); }
+}
+
+.current-highlight {
+  animation: highlight-breathe 2.5s ease-in-out infinite;
+}
+
+/* 滚动条 */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: #06060f; }
+::-webkit-scrollbar-thumb { background: rgba(201,168,76,0.3); border-radius: 3px; }
