@@ -157,8 +157,9 @@ export async function POST(req: NextRequest) {
     const text = message.content[0].type === 'text' ? message.content[0].text : ''
     return NextResponse.json({ text })
   } catch (error) {
-    console.error('API error:', error)
-    return NextResponse.json({ error: 'Failed to generate interpretation' }, { status: 500 })
+    const msg = error instanceof Error ? error.message : String(error)
+    console.error('API error:', msg)
+    return NextResponse.json({ error: msg }, { status: 500 })
   }
 }
 
