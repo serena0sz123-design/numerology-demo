@@ -44,9 +44,9 @@ export default function ResultPanel({ result, summary, interpretations, sectionT
       {/* 顶部：用户信息 */}
       <div className="text-center mb-10 animate-fade-in-up">
         <div className="flex items-center justify-center gap-3 mb-4">
-          <div className="divider-gold w-12" />
+          <div className="divider-gold w-12"></div>
           <span style={{ color: 'var(--gold)', fontSize: '16px' }}>✦</span>
-          <div className="divider-gold w-12" />
+          <div className="divider-gold w-12"></div>
         </div>
         <p className="text-xs tracking-[0.3em] mb-1" style={{ color: 'var(--gold)' }}>NUMEROLOGY CHART</p>
         <h2 className="text-2xl font-bold text-gold mb-1" style={{ fontFamily: 'Georgia' }}>
@@ -82,9 +82,13 @@ export default function ResultPanel({ result, summary, interpretations, sectionT
                 {highlight}
               </p>
               {body && (
-                <p className="text-sm leading-relaxed whitespace-pre-line" style={{ color: 'var(--text-main)' }}>
-                  {body}
-                </p>
+                <div className="space-y-3">
+                  {body.split('\n\n').filter(Boolean).map((para, i) => (
+                    <p key={i} className="text-sm leading-relaxed" style={{ color: 'var(--text-main)' }}>
+                      {para.trim()}
+                    </p>
+                  ))}
+                </div>
               )}
             </>
           )
@@ -200,7 +204,7 @@ function AccordionSection({
 
       {isOpen && (
         <div className="px-6 pb-6 animate-fade-in-up">
-          <div className="divider-gold mb-4" />
+          <div className="divider-gold mb-4"></div>
           {children}
         </div>
       )}

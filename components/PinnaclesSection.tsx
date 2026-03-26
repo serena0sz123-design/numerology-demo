@@ -258,9 +258,13 @@ export default function PinnaclesSection({
             )}
           </div>
         ) : (
-          <p className="text-sm leading-relaxed whitespace-pre-line" style={{ color: 'var(--text-main)' }}>
-            {interpretation}
-          </p>
+          <div className="space-y-3">
+            {interpretation.split('\n\n').filter(Boolean).map((para, i) => (
+              <p key={i} className="text-sm leading-relaxed" style={{ color: 'var(--text-main)' }}>
+                {para.trim()}
+              </p>
+            ))}
+          </div>
         )}
       </div>
     </div>

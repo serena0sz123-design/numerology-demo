@@ -70,15 +70,25 @@ export default function PersonalYearSection({
                 <p className="text-sm mb-1.5" style={{ color: 'var(--text-dim)' }}>{s.heading}：</p>
               )}
               {s.body && (
-                <p className="text-sm leading-relaxed whitespace-pre-line" style={{ color: 'var(--text-main)' }}>{s.body}</p>
+                <div className="space-y-3">
+                  {s.body.split('\n\n').filter(Boolean).map((para, j) => (
+                    <p key={j} className="text-sm leading-relaxed" style={{ color: 'var(--text-main)' }}>
+                      {para.trim()}
+                    </p>
+                  ))}
+                </div>
               )}
             </div>
           ))}
         </div>
       ) : (
-        <p className="text-sm leading-relaxed whitespace-pre-line" style={{ color: 'var(--text-main)' }}>
-          {interpretation}
-        </p>
+        <div className="space-y-3">
+          {interpretation.split('\n\n').filter(Boolean).map((para, i) => (
+            <p key={i} className="text-sm leading-relaxed" style={{ color: 'var(--text-main)' }}>
+              {para.trim()}
+            </p>
+          ))}
+        </div>
       )}
     </div>
   )

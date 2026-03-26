@@ -44,28 +44,40 @@ export default function CoreNumbers({ numbers, labels, activeNumber, onSelect, i
     return () => window.removeEventListener('keydown', handleKey)
   }, [numbers, activeNumber, onSelect])
 
+  const orbButton = (key: string, value: number) => (
+    <button
+      key={key}
+      onClick={() => onSelect(key)}
+      className={`number-orb rounded-full flex flex-col items-center justify-center ${activeNumber === key ? 'active' : ''}`}
+      style={{ width: '80px', height: '80px' }}
+    >
+      <span
+        className="text-2xl font-bold"
+        style={{ color: activeNumber === key ? '#f0d080' : 'var(--gold)', fontFamily: 'Georgia', lineHeight: 1 }}
+      >
+        {formatMasterNum(value)}
+      </span>
+      <span className="text-[8px] mt-0.5" style={{ color: 'var(--text-dim)' }}>
+        {labels[key]?.en}
+      </span>
+    </button>
+  )
+
   return (
     <div className="mb-4 animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
-      {/* 5个数字球 */}
-      <div className="flex justify-center gap-3 flex-wrap mb-2">
-        {numbers.map(({ key, value }) => (
-          <button
-            key={key}
-            onClick={() => onSelect(key)}
-            className={`number-orb rounded-full flex flex-col items-center justify-center ${activeNumber === key ? 'active' : ''}`}
-            style={{ width: '80px', height: '80px' }}
-          >
-            <span
-              className="text-2xl font-bold"
-              style={{ color: activeNumber === key ? '#f0d080' : 'var(--gold)', fontFamily: 'Georgia', lineHeight: 1 }}
-            >
-              {formatMasterNum(value)}
-            </span>
-            <span className="text-[9px] tracking-wider mt-0.5" style={{ color: 'var(--text-dim)' }}>
-              {labels[key]?.en.toUpperCase()}
-            </span>
-          </button>
-        ))}
+      {/* Desktop: 5 in a row */}
+      <div className="hidden sm:flex justify-center gap-3 mb-2">
+        {numbers.map(({ key, value }) => orbButton(key, value))}
+      </div>
+
+      {/* Mobile: 3 top + 2 bottom centered */}
+      <div className="sm:hidden flex flex-col gap-3 mb-2">
+        <div className="flex justify-center gap-3">
+          {numbers.slice(0, 3).map(({ key, value }) => orbButton(key, value))}
+        </div>
+        <div className="flex justify-center gap-3">
+          {numbers.slice(3).map(({ key, value }) => orbButton(key, value))}
+        </div>
       </div>
 
       {/* 点击提示 */}
@@ -90,12 +102,15 @@ export default function CoreNumbers({ numbers, labels, activeNumber, onSelect, i
             </div>
           </div>
           <div className="divider-gold mb-3" />
-          <p className="text-sm leading-relaxed whitespace-pre-line" style={{ color: 'var(--text-main)' }}>
-            {interpretations[activeNumber] || ''}
-          </p>
+          <div className="space-y-3">
+            {(interpretations[activeNumber] || '').split('\n\n').filter(Boolean).map((para, i) => (
+              <p key={i} className="text-sm leading-relaxed" style={{ color: 'var(--text-main)' }}>
+                {para.trim()}
+              </p>
+            ))}
+          </div>
         </div>
       )}
     </div>
   )
 }
-
