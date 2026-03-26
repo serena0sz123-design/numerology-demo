@@ -120,7 +120,6 @@ export default function PinnaclesSection({
     return `${p.startAge}–${p.endAge ?? '∞'}岁`
   }
 
-  const hasSummary = summary.path || summary.lesson || summary.nextStage
   const hasParsed = activeStage.external || activeStage.resistance || activeStage.tension
 
   return (
@@ -169,13 +168,7 @@ export default function PinnaclesSection({
       </div>
 
       {/* ── Layer 2: Active Stage Detail ── */}
-      <div
-        className="rounded-2xl p-5 space-y-4"
-        style={{
-          background: 'linear-gradient(135deg, rgba(201,168,76,0.07), rgba(124,58,237,0.05))',
-          border: '1px solid rgba(201,168,76,0.28)',
-        }}
-      >
+      <div className="space-y-4 pt-1">
         {/* Header */}
         <div className="flex items-start justify-between gap-3">
           <div>
@@ -251,7 +244,7 @@ export default function PinnaclesSection({
             {activeStage.tension && (
               <div>
                 <SectionLabel>核心矛盾</SectionLabel>
-                <p className="text-sm leading-relaxed" style={{ color: 'var(--text-main)', fontStyle: 'italic' }}>{activeStage.tension}</p>
+                <p className="text-sm leading-relaxed" style={{ color: 'var(--text-main)' }}>{activeStage.tension}</p>
               </div>
             )}
             {activeStage.advice.length > 0 && (
@@ -260,7 +253,7 @@ export default function PinnaclesSection({
                 <div className="space-y-1.5">
                   {activeStage.advice.map((a, i) => (
                     <div key={i} className="flex gap-2 items-start">
-                      <span className="text-xs mt-0.5 shrink-0" style={{ color: 'var(--gold)' }}>•</span>
+                      <span className="text-xs mt-0.5 shrink-0" style={{ color: 'rgba(255,255,255,0.25)' }}>–</span>
                       <p className="text-sm leading-relaxed" style={{ color: 'var(--text-main)' }}>{a}</p>
                     </div>
                   ))}
@@ -270,7 +263,7 @@ export default function PinnaclesSection({
             {activeStage.risk && (
               <div>
                 <SectionLabel>风险提醒</SectionLabel>
-                <p className="text-sm leading-relaxed" style={{ color: 'rgba(210,150,150,0.8)' }}>⚠ {activeStage.risk}</p>
+                <p className="text-sm leading-relaxed" style={{ color: 'var(--text-dim)' }}>{activeStage.risk}</p>
               </div>
             )}
           </div>
@@ -280,32 +273,6 @@ export default function PinnaclesSection({
           </p>
         )}
       </div>
-
-      {/* ── Path Summary ── */}
-      {hasSummary && (
-        <div className="rounded-xl p-4 space-y-3"
-          style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)' }}>
-          <p className="text-[10px] tracking-widest" style={{ color: 'var(--text-dim)' }}>人生路径总览</p>
-          {summary.path && (
-            <div>
-              <SectionLabel>路径脉络</SectionLabel>
-              <p className="text-sm font-medium" style={{ color: 'var(--text-main)' }}>{summary.path}</p>
-            </div>
-          )}
-          {summary.lesson && (
-            <div>
-              <SectionLabel>核心课题</SectionLabel>
-              <p className="text-sm" style={{ color: 'var(--text-main)' }}>{summary.lesson}</p>
-            </div>
-          )}
-          {summary.nextStage && (
-            <div>
-              <SectionLabel>下一阶段</SectionLabel>
-              <p className="text-sm" style={{ color: 'var(--text-dim)' }}>{summary.nextStage}</p>
-            </div>
-          )}
-        </div>
-      )}
     </div>
   )
 }
