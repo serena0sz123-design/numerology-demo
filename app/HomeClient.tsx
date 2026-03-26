@@ -36,7 +36,7 @@ const NUMBER_KEYS = ['lifePath', 'birthday', 'expression', 'soulUrge', 'personal
 const SECTION_KEYS = ['loshu', 'pinnacles', 'personalyear']
 
 // ── MOCK MODE：测试用，上线前删除此块并恢复 fetchInterpret ──
-const MOCK_MODE = true
+const MOCK_MODE = false
 
 const MOCK_DATA: Record<string, string> = {
   summary: `权力与表达的双重烙印：以掌控之力构建世界，以创造之光照亮他人。\n\n你天生具备强大的组织力与领导直觉，能在复杂局面中迅速找到核心，并以务实的方式推动事情落地。你的存在本身就是一种能量场。\n\n核心课题在于学会放下对结果的过度掌控，信任过程与他人的力量。当你允许自己"不完美地前进"，反而能到达更远的地方。`,
