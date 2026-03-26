@@ -3,9 +3,17 @@
 import { NumerologyResult } from '@/lib/numerology'
 
 function parseInterpretation(text: string) {
-  // Split at year headings like "2026年（...）"
   const parts = text.split(/(?=\d{4}年)/).filter(Boolean)
   return parts.map(part => {
+    // Real AI uses "2026年（流年9）——content" format
+    const emDash = part.search(/——/)
+    if (emDash !== -1) {
+      return {
+        heading: part.slice(0, emDash).trim(),
+        body: part.slice(emDash + 2).trim(),
+      }
+    }
+    // Fallback: newline-separated heading
     const newline = part.indexOf('\n')
     if (newline === -1) return { heading: part.trim(), body: '' }
     return {
@@ -67,7 +75,7 @@ export default function PersonalYearSection({
           {sections.map((s, i) => (
             <div key={i}>
               {s.heading && (
-                <p className="text-sm mb-1.5" style={{ color: 'var(--text-dim)' }}>{s.heading}：</p>
+                <p className="text-xs mb-1" style={{ color: 'var(--gold)' }}>{s.heading}</p>
               )}
               {s.body && (
                 <div className="space-y-3">

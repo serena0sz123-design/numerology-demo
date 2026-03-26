@@ -83,8 +83,8 @@ function parseInterpretation(text: string): { stages: ParsedStage[]; summary: Pa
 // ── Section label component (unified style) ───────────────
 function SectionLabel({ children }: { children: string }) {
   return (
-    <p className="text-sm mb-1.5" style={{ color: 'var(--text-dim)' }}>
-      {children}：
+    <p className="text-xs mb-1" style={{ color: 'var(--gold)' }}>
+      {children}
     </p>
   )
 }
