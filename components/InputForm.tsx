@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 
 interface Props {
   onSubmit: (name: string, birthDate: string) => void
@@ -14,6 +14,9 @@ export default function InputForm({ onSubmit, loading, apiError }: Props) {
   const [month, setMonth] = useState('')
   const [day, setDay] = useState('')
   const [error, setError] = useState('')
+  const yearRef = useRef<HTMLInputElement>(null)
+  const monthRef = useRef<HTMLInputElement>(null)
+  const dayRef = useRef<HTMLInputElement>(null)
 
   function validate() {
     if (!name.trim()) return '请输入您的姓名拼音或英文名'
@@ -36,14 +39,14 @@ export default function InputForm({ onSubmit, loading, apiError }: Props) {
   }
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center px-4 py-16">
+    <div className="min-h-screen flex flex-col items-center justify-center px-4 py-16" suppressHydrationWarning>
       {/* 标题区 */}
       <div className="text-center mb-12 animate-fade-in-up">
         {/* 顶部装饰符号 */}
         <div className="flex items-center justify-center gap-3 mb-6">
-          <div className="divider-gold w-16" />
+          <div className="divider-gold w-16"></div>
           <span style={{ color: 'var(--gold)', fontSize: '20px' }}>✦</span>
-          <div className="divider-gold w-16" />
+          <div className="divider-gold w-16"></div>
         </div>
 
         <p className="text-sm tracking-[0.3em] mb-3" style={{ color: 'var(--gold)', fontFamily: 'Georgia' }}>
@@ -57,9 +60,9 @@ export default function InputForm({ onSubmit, loading, apiError }: Props) {
         </p>
 
         <div className="flex items-center justify-center gap-3 mt-6">
-          <div className="divider-gold w-16" />
+          <div className="divider-gold w-16"></div>
           <span style={{ color: 'var(--gold)', fontSize: '20px' }}>✦</span>
-          <div className="divider-gold w-16" />
+          <div className="divider-gold w-16"></div>
         </div>
 
         <p className="mt-8 text-sm leading-relaxed max-w-sm mx-auto" style={{ color: 'var(--text-dim)' }}>
@@ -100,7 +103,9 @@ export default function InputForm({ onSubmit, loading, apiError }: Props) {
                 type="text"
                 placeholder="年 YYYY"
                 value={year}
+                ref={yearRef}
                 onChange={e => setYear(e.target.value)}
+                onKeyDown={e => { if (e.key === 'ArrowRight') { e.preventDefault(); monthRef.current?.focus() } }}
                 className="input-cosmic w-full rounded-lg px-3 py-3 text-sm"
                 inputMode="numeric"
                 pattern="[0-9]*"
@@ -110,7 +115,12 @@ export default function InputForm({ onSubmit, loading, apiError }: Props) {
                 type="text"
                 placeholder="月 MM"
                 value={month}
+                ref={monthRef}
                 onChange={e => setMonth(e.target.value)}
+                onKeyDown={e => {
+                  if (e.key === 'ArrowLeft') { e.preventDefault(); yearRef.current?.focus() }
+                  if (e.key === 'ArrowRight') { e.preventDefault(); dayRef.current?.focus() }
+                }}
                 className="input-cosmic w-full rounded-lg px-3 py-3 text-sm"
                 inputMode="numeric"
                 pattern="[0-9]*"
@@ -120,7 +130,9 @@ export default function InputForm({ onSubmit, loading, apiError }: Props) {
                 type="text"
                 placeholder="日 DD"
                 value={day}
+                ref={dayRef}
                 onChange={e => setDay(e.target.value)}
+                onKeyDown={e => { if (e.key === 'ArrowLeft') { e.preventDefault(); monthRef.current?.focus() } }}
                 className="input-cosmic w-full rounded-lg px-3 py-3 text-sm"
                 inputMode="numeric"
                 pattern="[0-9]*"

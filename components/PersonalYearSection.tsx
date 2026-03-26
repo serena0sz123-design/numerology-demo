@@ -2,6 +2,19 @@
 
 import { NumerologyResult } from '@/lib/numerology'
 
+function parseInterpretation(text: string) {
+  // Split at year headings like "2026年（...）"
+  const parts = text.split(/(?=\d{4}年)/).filter(Boolean)
+  return parts.map(part => {
+    const newline = part.indexOf('\n')
+    if (newline === -1) return { heading: part.trim(), body: '' }
+    return {
+      heading: part.slice(0, newline).trim(),
+      body: part.slice(newline + 1).trim(),
+    }
+  })
+}
+
 export default function PersonalYearSection({
   result,
   interpretation,
@@ -11,6 +24,7 @@ export default function PersonalYearSection({
 }) {
   const years = result.personalYears.slice(1, 4)
   const currentYear = new Date().getFullYear()
+  const sections = parseInterpretation(interpretation)
 
   return (
     <div>
@@ -47,9 +61,25 @@ export default function PersonalYearSection({
         })}
       </div>
 
-      <p className="text-sm leading-relaxed whitespace-pre-line" style={{ color: 'var(--text-main)' }}>
-        {interpretation}
-      </p>
+      {/* 逐年解读 */}
+      {sections.length > 0 ? (
+        <div className="space-y-4">
+          {sections.map((s, i) => (
+            <div key={i}>
+              {s.heading && (
+                <p className="text-sm mb-1.5" style={{ color: 'var(--text-dim)' }}>{s.heading}：</p>
+              )}
+              {s.body && (
+                <p className="text-sm leading-relaxed whitespace-pre-line" style={{ color: 'var(--text-main)' }}>{s.body}</p>
+              )}
+            </div>
+          ))}
+        </div>
+      ) : (
+        <p className="text-sm leading-relaxed whitespace-pre-line" style={{ color: 'var(--text-main)' }}>
+          {interpretation}
+        </p>
+      )}
     </div>
   )
 }

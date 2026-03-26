@@ -143,7 +143,7 @@ export default function PinnaclesSection({
             <button
               key={i}
               onClick={() => setActiveIndex(i)}
-              className="flex-1 rounded-xl p-2.5 text-center transition-all"
+              className={`flex-1 rounded-xl p-2.5 text-center transition-all${current ? ' current-highlight' : ''}`}
               style={{
                 background: active
                   ? 'linear-gradient(135deg, rgba(201,168,76,0.18), rgba(124,58,237,0.1))'
@@ -177,9 +177,9 @@ export default function PinnaclesSection({
       </div>
 
       {/* ── Layer 2: Active Stage Detail ── */}
-      <div className="space-y-4 pt-1">
+      <div className="pt-1">
         {/* Header */}
-        <div className="flex items-start justify-between gap-3">
+        <div className="flex items-start justify-between gap-3 mb-2">
           <div>
             <p className="text-xs tracking-wider" style={{ color: 'var(--gold)' }}>
               {activePinnacle.label} · {ageLabel(activePinnacle)}
@@ -202,7 +202,7 @@ export default function PinnaclesSection({
         </div>
 
         {/* Keywords — same rounded-xl as timeline cards */}
-        <div className="flex flex-wrap gap-1.5">
+        <div className="flex flex-wrap gap-1.5 mb-4">
           {(PINNACLE_KW[activePinnacle.number] ?? []).map(kw => (
             <span key={kw} className="text-[10px] px-2.5 py-1.5 rounded-xl inline-flex items-center justify-center"
               style={{ background: 'rgba(201,168,76,0.09)', color: 'rgba(201,168,76,0.85)', border: '1px solid rgba(201,168,76,0.18)' }}>

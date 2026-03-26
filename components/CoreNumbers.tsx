@@ -1,5 +1,6 @@
 'use client'
 
+import { useEffect } from 'react'
 import { NumerologyResult } from '@/lib/numerology'
 
 interface Props {
@@ -27,6 +28,22 @@ const NUMBER_HEADLINES: Record<string, string> = {
 }
 
 export default function CoreNumbers({ numbers, labels, activeNumber, onSelect, interpretations }: Props) {
+  useEffect(() => {
+    function handleKey(e: KeyboardEvent) {
+      const idx = numbers.findIndex(n => n.key === activeNumber)
+      if (e.key === 'ArrowLeft') {
+        const next = idx <= 0 ? numbers.length - 1 : idx - 1
+        onSelect(numbers[next].key)
+      }
+      if (e.key === 'ArrowRight') {
+        const next = idx < 0 || idx >= numbers.length - 1 ? 0 : idx + 1
+        onSelect(numbers[next].key)
+      }
+    }
+    window.addEventListener('keydown', handleKey)
+    return () => window.removeEventListener('keydown', handleKey)
+  }, [numbers, activeNumber, onSelect])
+
   return (
     <div className="mb-4 animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
       {/* 5个数字球 */}
