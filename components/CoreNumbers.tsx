@@ -27,6 +27,31 @@ const NUMBER_HEADLINES: Record<string, string> = {
   personality: '你给别人的第一印象',
 }
 
+interface ParsedNumber {
+  keywords: string[]
+  sections: { title: string; body: string }[]
+}
+
+function parseNumberInterpretation(text: string): ParsedNumber {
+  const matches = [...text.matchAll(/【([^】]+)】([^【]*)/gs)]
+  if (matches.length === 0) return { keywords: [], sections: [] }
+
+  const keywords: string[] = []
+  const sections: { title: string; body: string }[] = []
+
+  for (const m of matches) {
+    const title = m[1].trim()
+    const body = m[2].trim()
+    if (title === '关键词') {
+      keywords.push(...body.split(/[··、,，]/).map(k => k.trim()).filter(Boolean))
+    } else {
+      sections.push({ title, body })
+    }
+  }
+
+  return { keywords, sections }
+}
+
 export default function CoreNumbers({ numbers, labels, activeNumber, onSelect, interpretations }: Props) {
   useEffect(() => {
     function handleKey(e: KeyboardEvent) {
@@ -86,31 +111,69 @@ export default function CoreNumbers({ numbers, labels, activeNumber, onSelect, i
       </p>
 
       {/* 展开的数字解读 */}
-      {activeNumber && (
-        <div className="card-cosmic rounded-xl p-5 animate-fade-in-up">
-          <div className="flex items-center gap-3 mb-1">
-            <span className="text-2xl font-bold text-gold" style={{ fontFamily: 'Georgia' }}>
-              {formatMasterNum(numbers.find(n => n.key === activeNumber)?.value ?? 0)}
-            </span>
-            <div>
-              <p className="text-sm font-medium" style={{ color: 'var(--text-main)' }}>
-                {labels[activeNumber]?.zh} · {labels[activeNumber]?.en}
-              </p>
-              <p className="text-xs" style={{ color: 'var(--gold)', opacity: 0.8 }}>
-                {NUMBER_HEADLINES[activeNumber]}
-              </p>
+      {activeNumber && (() => {
+        const raw = interpretations[activeNumber] || ''
+        const parsed = parseNumberInterpretation(raw)
+        const hasStructure = parsed.sections.length > 0
+
+        return (
+          <div className="card-cosmic rounded-xl p-5 animate-fade-in-up">
+            {/* 卡片头部 */}
+            <div className="flex items-center gap-3 mb-1">
+              <span className="text-2xl font-bold text-gold" style={{ fontFamily: 'Georgia' }}>
+                {formatMasterNum(numbers.find(n => n.key === activeNumber)?.value ?? 0)}
+              </span>
+              <div>
+                <p className="text-sm font-medium" style={{ color: 'var(--text-main)' }}>
+                  {labels[activeNumber]?.zh} · {labels[activeNumber]?.en}
+                </p>
+                <p className="text-xs" style={{ color: 'var(--gold)', opacity: 0.8 }}>
+                  {NUMBER_HEADLINES[activeNumber]}
+                </p>
+              </div>
             </div>
+            <div className="divider-gold mb-3" />
+
+            {/* 关键词标签 */}
+            {parsed.keywords.length > 0 && (
+              <div className="flex flex-wrap gap-1.5 mb-4">
+                {parsed.keywords.map(kw => (
+                  <span key={kw} className="text-[10px] px-2.5 py-1.5 rounded-xl inline-flex items-center justify-center"
+                    style={{ background: 'rgba(201,168,76,0.09)', color: 'rgba(201,168,76,0.85)', border: '1px solid rgba(201,168,76,0.18)' }}>
+                    {kw}
+                  </span>
+                ))}
+              </div>
+            )}
+
+            {/* 解读内容 */}
+            {hasStructure ? (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
+                {parsed.sections.map((s, i) => (
+                  <div key={i}>
+                    <p className="text-xs mb-1" style={{ color: 'var(--gold)' }}>{s.title}</p>
+                    {s.body.split('\n\n').filter(Boolean).map((para, j) => (
+                      <p key={j} className="text-sm leading-relaxed"
+                        style={{ color: 'var(--text-main)', marginTop: j > 0 ? '8px' : 0 }}>
+                        {para.trim()}
+                      </p>
+                    ))}
+                  </div>
+                ))}
+              </div>
+            ) : (
+              /* 旧格式兼容 */
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
+                {raw.split('\n\n').filter(Boolean).map((para, i) => (
+                  <p key={i} className="text-sm leading-relaxed" style={{ color: 'var(--text-main)' }}>
+                    {para.trim()}
+                  </p>
+                ))}
+              </div>
+            )}
           </div>
-          <div className="divider-gold mb-3" />
-          <div className="space-y-3">
-            {(interpretations[activeNumber] || '').split('\n\n').filter(Boolean).map((para, i) => (
-              <p key={i} className="text-sm leading-relaxed" style={{ color: 'var(--text-main)' }}>
-                {para.trim()}
-              </p>
-            ))}
-          </div>
-        </div>
-      )}
+        )
+      })()}
     </div>
   )
 }

@@ -72,18 +72,34 @@ export default function ResultPanel({ result, summary, interpretations, sectionT
           ✦ 命盘整体解读 · CHART READING
         </p>
         {(() => {
-          const parts = summary.split('\n\n')
-          const highlight = parts[0]
-          const body = parts.slice(1).join('\n\n')
+          const firstBracket = summary.search(/【/)
+          const headline = firstBracket >= 0 ? summary.slice(0, firstBracket).trim() : summary.split('\n\n')[0]
+          const sectionMatches = [...summary.matchAll(/【([^】]+)】([^【]*)/gs)]
+          const sections = sectionMatches.map(m => ({ title: m[1].trim(), body: m[2].trim() }))
+
           return (
             <>
-              <p className="text-sm font-semibold leading-relaxed mb-3"
+              <p className="text-sm font-semibold leading-relaxed mb-4"
                 style={{ color: 'var(--gold)', fontFamily: 'Georgia', letterSpacing: '0.03em' }}>
-                {highlight}
+                {headline}
               </p>
-              {body && (
-                <div className="space-y-3">
-                  {body.split('\n\n').filter(Boolean).map((para, i) => (
+              {sections.length > 0 ? (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
+                  {sections.map((s, i) => (
+                    <div key={i}>
+                      <p className="text-xs mb-1" style={{ color: 'var(--gold)' }}>{s.title}</p>
+                      {s.body.split('\n\n').filter(Boolean).map((para, j) => (
+                        <p key={j} className="text-sm leading-relaxed"
+                          style={{ color: 'var(--text-main)', marginTop: j > 0 ? '8px' : 0 }}>
+                          {para.trim()}
+                        </p>
+                      ))}
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
+                  {summary.split('\n\n').slice(1).filter(Boolean).map((para, i) => (
                     <p key={i} className="text-sm leading-relaxed" style={{ color: 'var(--text-main)' }}>
                       {para.trim()}
                     </p>
