@@ -62,6 +62,15 @@ async function fetchInterpret(body: { type: string; numberKey?: string; [key: st
     body: JSON.stringify(body),
   })
   const data = await res.json()
+  if (data.error) {
+    // 尝试提取 Anthropic 返回的具体错误信息
+    let msg: string = data.error
+    try {
+      const inner = JSON.parse(msg.replace(/^\d+\s+/, ''))
+      msg = inner?.error?.message || msg
+    } catch { /* 保留原始错误 */ }
+    throw new Error(msg)
+  }
   return cleanText(data.text || '')
 }
 
