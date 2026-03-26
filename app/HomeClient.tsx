@@ -50,7 +50,7 @@ const MOCK_DATA: Record<string, string> = {
   personalyear: `2026年（当前流年数6）\n这是关于责任、爱与关系修复的一年，家庭、合作与情感连接会成为核心议题。\n需要警惕过度付出导致自我消耗，在照顾他人的同时记得划定边界。\n\n2027年（流年数7）\n一个向内沉淀、深度思考的年份，适合学习、研究和精神探索。\n避免过度孤立，保持与外界的适度连接，防止钻牛角尖。\n\n2028年（流年数8）\n收获与权力运动的年份，过去几年的投入开始看到回报，职业与财务运势上升。\n警惕在成功面前变得傲慢或急于扩张，稳中求进才是关键。`,
 }
 
-async function fetchInterpret(body: { type: string; numberKey?: string }): Promise<string> {
+async function fetchInterpret(body: { type: string; numberKey?: string; [key: string]: unknown }): Promise<string> {
   if (MOCK_MODE) {
     await new Promise(r => setTimeout(r, 300)) // 模拟加载感
     const key = body.type === 'number' ? (body.numberKey ?? '') : body.type
