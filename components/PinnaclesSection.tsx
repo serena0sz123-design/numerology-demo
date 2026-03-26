@@ -83,8 +83,8 @@ function parseInterpretation(text: string): { stages: ParsedStage[]; summary: Pa
 // ── Section label component (unified style) ───────────────
 function SectionLabel({ children }: { children: string }) {
   return (
-    <p className="text-[10px] tracking-widest mb-1.5" style={{ color: 'rgba(201,168,76,0.45)' }}>
-      ✦ {children}
+    <p className="text-sm mb-1.5" style={{ color: 'var(--text-dim)' }}>
+      {children}
     </p>
   )
 }
@@ -145,7 +145,7 @@ export default function PinnaclesSection({
                 boxShadow: current && active ? '0 0 14px rgba(201,168,76,0.15)' : 'none',
               }}
             >
-              <div className="text-2xl font-bold" style={{ color: 'var(--gold)', fontFamily: 'Georgia' }}>
+              <div className="text-2xl font-bold" style={{ color: 'var(--gold)', fontFamily: 'Georgia', lineHeight: 1 }}>
                 {p.number}
               </div>
               <div className="text-[11px]" style={{ color: 'rgba(160,140,220,0.8)' }}>▲{p.challenge}</div>
@@ -177,49 +177,34 @@ export default function PinnaclesSection({
               · {birthYear + activePinnacle.startAge}{activePinnacle.endAge ? `–${birthYear + activePinnacle.endAge}` : '+'}
             </p>
             {isCurrent(activePinnacle) && (
-              <span
-                className="text-[9px] px-2 py-0.5 rounded-full tracking-widest"
-                style={{ background: 'rgba(201,168,76,0.12)', color: 'var(--gold)', border: '1px solid rgba(201,168,76,0.25)' }}
-              >
-                ◉ 当前阶段
-              </span>
+              <p className="text-xs" style={{ color: 'var(--text-dim)' }}>◉ 当前阶段</p>
             )}
           </div>
-          {/* Pinnacle ↔ Challenge chips */}
-          <div className="flex items-center gap-2 shrink-0">
-            <div className="text-center">
-              <div className="text-[9px] mb-0.5" style={{ color: 'rgba(201,168,76,0.45)' }}>外在</div>
-              <div
-                className="w-9 h-9 rounded-full flex items-center justify-center text-base font-bold"
-                style={{ background: 'rgba(201,168,76,0.1)', border: '1px solid rgba(201,168,76,0.38)', color: 'var(--gold)', fontFamily: 'Georgia' }}
-              >
-                {activePinnacle.number}
-              </div>
-            </div>
-            <div className="text-xs" style={{ color: 'var(--text-dim)' }}>↔</div>
-            <div className="text-center">
-              <div className="text-[9px] mb-0.5" style={{ color: 'rgba(160,140,220,0.45)' }}>内在</div>
-              <div
-                className="w-9 h-9 rounded-full flex items-center justify-center text-base font-bold"
-                style={{ background: 'rgba(124,58,237,0.1)', border: '1px solid rgba(124,58,237,0.28)', color: 'rgba(180,160,240,1)', fontFamily: 'Georgia' }}
-              >
-                {activePinnacle.challenge}
-              </div>
-            </div>
+          {/* 外在 · 内在 pill badges */}
+          <div className="flex gap-2 shrink-0">
+            <span className="text-xs px-3 py-1 rounded-full flex items-center gap-1.5"
+              style={{ background: 'rgba(201,168,76,0.12)', border: '1px solid rgba(201,168,76,0.25)', color: 'var(--gold)' }}>
+              <span className="w-1.5 h-1.5 rounded-full" style={{ background: 'var(--gold)' }}></span>
+              外在 {activePinnacle.number}
+            </span>
+            <span className="text-xs px-3 py-1 rounded-full flex items-center gap-1.5"
+              style={{ background: 'rgba(124,58,237,0.12)', border: '1px solid rgba(124,58,237,0.28)', color: 'rgba(180,160,240,1)' }}>
+              <span className="w-1.5 h-1.5 rounded-full" style={{ background: 'rgba(180,160,240,1)' }}></span>
+              内在 {activePinnacle.challenge}
+            </span>
           </div>
         </div>
 
-        {/* Keywords */}
+        {/* Keywords — unified pill style */}
         <div className="flex flex-wrap gap-1.5">
           {(PINNACLE_KW[activePinnacle.number] ?? []).map(kw => (
-            <span key={kw} className="text-[10px] px-2 py-0.5 rounded-full"
+            <span key={kw} className="text-[10px] px-2.5 py-1 rounded-full"
               style={{ background: 'rgba(201,168,76,0.09)', color: 'rgba(201,168,76,0.85)', border: '1px solid rgba(201,168,76,0.18)' }}>
               {kw}
             </span>
           ))}
-          <span className="text-[10px] px-1" style={{ color: 'rgba(255,255,255,0.15)' }}>·</span>
           {(CHALLENGE_KW[activePinnacle.challenge] ?? []).map(kw => (
-            <span key={kw} className="text-[10px] px-2 py-0.5 rounded-full"
+            <span key={kw} className="text-[10px] px-2.5 py-1 rounded-full"
               style={{ background: 'rgba(124,58,237,0.09)', color: 'rgba(160,140,220,0.85)', border: '1px solid rgba(124,58,237,0.18)' }}>
               {kw}
             </span>
@@ -252,10 +237,9 @@ export default function PinnaclesSection({
                 <SectionLabel>行动建议</SectionLabel>
                 <div className="space-y-1.5">
                   {activeStage.advice.map((a, i) => (
-                    <div key={i} className="flex gap-2 items-start">
-                      <span className="text-xs mt-0.5 shrink-0" style={{ color: 'rgba(255,255,255,0.25)' }}>–</span>
-                      <p className="text-sm leading-relaxed" style={{ color: 'var(--text-main)' }}>{a}</p>
-                    </div>
+                    <p key={i} className="text-sm leading-relaxed" style={{ color: 'var(--text-main)' }}>
+                      · {a}
+                    </p>
                   ))}
                 </div>
               </div>

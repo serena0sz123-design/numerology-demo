@@ -40,7 +40,7 @@ export default function CoreNumbers({ numbers, labels, activeNumber, onSelect, i
           >
             <span
               className="text-2xl font-bold"
-              style={{ color: activeNumber === key ? '#f0d080' : 'var(--gold)', fontFamily: 'Georgia' }}
+              style={{ color: activeNumber === key ? '#f0d080' : 'var(--gold)', fontFamily: 'Georgia', lineHeight: 1 }}
             >
               {formatMasterNum(value)}
             </span>
