@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
-import Anthropic from '@anthropic-ai/sdk'
 import { NumerologyResult } from '@/lib/numerology'
 
-const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
+const SILICONFLOW_API_URL = 'https://api.siliconflow.cn/v1/chat/completions'
+const MODEL = 'deepseek-ai/DeepSeek-V3'
 
 const NUMBER_NAMES: Record<string, string> = {
   lifePath:    '生命数（Life Path Number）',
@@ -182,13 +182,26 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Invalid type' }, { status: 400 })
     }
 
-    const message = await client.messages.create({
-      model: 'claude-sonnet-4-6',
-      max_tokens: type === 'pinnacles' ? 800 : 500,
-      messages: [{ role: 'user', content: prompt }],
+    const response = await fetch(SILICONFLOW_API_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${process.env.SILICONFLOW_API_KEY}`,
+      },
+      body: JSON.stringify({
+        model: MODEL,
+        max_tokens: type === 'pinnacles' ? 800 : 500,
+        messages: [{ role: 'user', content: prompt }],
+      }),
     })
 
-    const text = message.content[0].type === 'text' ? message.content[0].text : ''
+    if (!response.ok) {
+      const errText = await response.text()
+      throw new Error(`SiliconFlow API error: ${response.status} ${errText}`)
+    }
+
+    const data = await response.json()
+    const text = data.choices?.[0]?.message?.content ?? ''
     return NextResponse.json({ text })
   } catch (error) {
     const msg = error instanceof Error ? error.message : String(error)
